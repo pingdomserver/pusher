@@ -2,7 +2,7 @@
 package pusher
 
 import (
-	"code.google.com/p/go.net/websocket"
+	"github.com/hashicorp/go.net/websocket"
 	"fmt"
 	"time"
 )
