@@ -4,6 +4,7 @@ package pusher
 import (
 	"github.com/pingdomserver/go.net/websocket"
 	"fmt"
+	"log"
 	"time"
 )
 
@@ -14,10 +15,11 @@ const (
 type Connection struct {
 	key      string
 	conn     *websocket.Conn
+	logger 	 *log.Logger
 	channels []*Channel
 }
 
-func New(key string) (*Connection, error) {
+func New(key string, logger *log.Logger) (*Connection, error) {
 	ws, err := websocket.Dial(fmt.Sprintf(pusherUrl, key), "", "http://localhost/")
 	if err != nil {
 		return nil, err
@@ -26,6 +28,7 @@ func New(key string) (*Connection, error) {
 	connection := &Connection{
 		key:  key,
 		conn: ws,
+		logger: logger,
 		channels: []*Channel{
 			NewChannel(""),
 		},
@@ -47,6 +50,12 @@ func (c *Connection) pong() {
 }
 
 func (c *Connection) poll() {
+	defer func() {
+		if r := recover(); r != nil {
+			c.logger.Println("Error reading data from socket")
+		}
+	}()
+
 	for {
 		var msg Message
 		err := websocket.JSON.Receive(c.conn, &msg)
