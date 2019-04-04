@@ -55,6 +55,8 @@ func (c *Connection) poll() {
 		err := websocket.JSON.Receive(c.conn, &msg)
 		if err != nil {
 			c.logger.Println("Error reading data from socket")
+
+			continue
 		}
 
 		c.processMessage(&msg)
