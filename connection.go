@@ -50,17 +50,11 @@ func (c *Connection) pong() {
 }
 
 func (c *Connection) poll() {
-	defer func() {
-		if r := recover(); r != nil {
-			c.logger.Println("Error reading data from socket")
-		}
-	}()
-
 	for {
 		var msg Message
 		err := websocket.JSON.Receive(c.conn, &msg)
 		if err != nil {
-			panic(err)
+			c.logger.Println("Error reading data from socket")
 		}
 
 		c.processMessage(&msg)
