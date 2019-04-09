@@ -57,6 +57,7 @@ func (c *Connection) poll() {
 			// 2019-04-05 hotfix: skip logging for now -- messages were flooding the log and filling up the disk.
 			//                    This should be changed to log at most once per minute
 			// c.logger.Println("Error reading data from socket")
+			time.Sleep(500 * time.Millisecond)
 
 			continue
 		}
