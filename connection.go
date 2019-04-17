@@ -7,9 +7,9 @@ import (
 	"log"
 	"time"
 )
-
+// https://pusher.com/docs/channels/library_auth_reference/pusher-websockets-protocol#websocket-connection
 const (
-	pusherUrl = "ws://ws.pusherapp.com:80/app/%s?protocol=7"
+	pusherUrl = "ws://ws-%s.pusher.com:80/app/%s?protocol=7"
 )
 
 type Connection struct {
@@ -19,8 +19,8 @@ type Connection struct {
 	channels []*Channel
 }
 
-func New(key string, logger *log.Logger) (*Connection, error) {
-	ws, err := websocket.Dial(fmt.Sprintf(pusherUrl, key), "", "http://localhost/")
+func New(key string, cluster string, logger *log.Logger) (*Connection, error) {
+	ws, err := websocket.Dial(fmt.Sprintf(pusherUrl, cluster, key), "", "http://localhost/")
 	if err != nil {
 		return nil, err
 	}
